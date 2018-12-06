@@ -1,49 +1,47 @@
 //1992 쿼드트리
-#include <iostream>
+#include <cstdio>
 using namespace std;
 int a[100][100];
 int N;
-bool isSame(int xs, int xe, int ys, int ye){
-    bool res = true;
-    int norm = a[xs][ys];
-    for(int i=xs; i<xe; i++){
-        for(int j=ys; j<ye; j++){
+bool isSame(int x, int y, int n){
+    int norm = a[x][y];
+    for(int i=x; i<x+n; i++){
+        for(int j=y; j<y+n; j++){
             if(a[i][j] != norm){
-                res = false;
-                return res;
+                return false;
             }
         }
     }
-    return res;
+    return true;
 }
 
-void compression(int xs, int xe, int ys, int ye){
-    cout << '(';
-    
-    
-    if(isSame(xs, xe, ys, ye)){
-        if(a[xs][xe]==1) cout << '1';
-        else cout << '0';
-    }else if(xs>=0 && xe<=N-1 && ys>=0 && ye<=N-1){
-        compression(xs, xe/2, ys, ye/2);
-        compression(xe/2+1, xe, ys, ye/2);
-        compression(xs, xe/2, ye/2+1, ye);
-        compression(xs/2+1, xe, ye/2+1, ye);
+void compression(int x, int y, int n){
+    if(isSame(x, y, n)){
+        printf("%d", a[x][y]);
+    }else{
+        printf("(");
+        int m = n/2;
+        for(int i=0; i<2; i++){
+            for(int j=0; j<2; j++){
+                compression(x+m*i, y+m*j, m);
+            }
+        }
+        printf(")");
     }
-
-    cout << ')';
 }
 
 int main(){
     //always 2의 제곱수
-    cin >> N;
+    scanf("%d", &N);
     for(int i=0; i<N; i++){
         for(int j=0; j<N; j++){
-            cin >> a[i][j];
+            scanf("%1d", &a[i][j]);
         }
     }
 
-    compression(0, N-1, 0, N-1);
+    compression(0, 0, N);
+
+    printf("\n");
     return 0;
 
 
